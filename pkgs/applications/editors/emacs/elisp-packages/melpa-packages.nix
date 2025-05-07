@@ -170,6 +170,13 @@ let
           inherit (self.melpaPackages) easy-kill;
         };
 
+	elisp-autofmt = super.elisp-autofmt.overrideAttrs (attrs: {
+          postPatch = (attrs.postPatch or "") + ''
+            substituteInPlace elisp-autofmt.el \
+              --replace 'defcustom elisp-autofmt-python-bin nil' 'defcustom elisp-autofmt-python-bin "${lib.getExe pkgs.python3}"'
+          '';
+        });
+
         dune = dontConfigure super.dune;
 
         emacsql = super.emacsql.overrideAttrs (old: lib.optionalAttrs (lib.versionOlder old.version "20241115.1939") {
